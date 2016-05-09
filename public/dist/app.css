@@ -1,0 +1,107 @@
+.api .api-entry {
+  margin-bottom: 50px;
+}
+.api .api-entry .section {
+  margin-bottom: 20px;
+}
+
+
+.game a {
+  color: aqua;
+}
+.game board {
+  margin-left: auto;
+  margin-right: auto;
+}
+.game board .house-icon {
+  font-family: FontAwesome;
+  fill: green;
+}
+.game board .hotel-icon {
+  font-family: FontAwesome;
+  fill: red;
+}
+.game board .outer-border {
+  stroke: black;
+  stroke-width: 1;
+  fill: none;
+}
+.game board .inner-border {
+  stroke: black;
+  stroke-width: 1;
+  fill: none;
+}
+.game board .space .main-space {
+  fill: #FFFFFF;
+}
+.game board .space .cell-divider {
+  stroke: black;
+  stroke-width: 1;
+}
+.game board .space .icon {
+  font-family: FontAwesome;
+}
+.game board .space.selected > .main-space {
+  fill: #EEEEEE;
+}
+.game .slide {
+  display: inline-block;
+  border: 2px solid black;
+  height: 200px;
+  width: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+.game .slide .color-bar {
+  height: 50px;
+  border-bottom: 2px solid black;
+  padding: 5px;
+}
+.game .slide .color-bar .house {
+  float: left;
+  width: 20px;
+  height: 20px;
+  background-color: green;
+  margin: 5px;
+}
+.game .slide .color-bar .hotel {
+  float: left;
+  width: 40px;
+  height: 20px;
+  background-color: red;
+  border: 1px solid black;
+  margin-left: auto;
+  margin-right: auto;
+}
+.game .slide .title {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 80%;
+  text-align: center;
+}
+.game .slide .icon {
+  position: absolute;
+  font-family: FontAwesome, sans-serif;
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 300%;
+  text-align: center;
+}
+.game .right-slide {
+  display: inline-block;
+}
+.game .left-slide {
+  display: inline-block;
+}
+
+.login a {
+  border-bottom: solid 2px black;
+}
+
+.player-dash a {
+  background: red;
+}

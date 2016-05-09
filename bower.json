@@ -1,0 +1,35 @@
+{
+  "name": "Evilopoly",
+  "description": "A MEAN stack implementation of evilopoly",
+  "main": "public/index.html",
+  "authors": [
+    "Dan Auger",
+    "Steve Schiavoni",
+    "Stuart Hollis",
+    "Joe Dragovich"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "Evilopoly"
+  ],
+  "homepage": "https://github.com/dauger27/slm-hrk-tst",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-route": "~1.4.7",
+    "angular-sanitize": "~1.4.7",
+    "angular": "~1.4.7",
+    "bootstrap": "~3.3.6",
+    "angular-utf8-base64": "~0.0.5",
+    "ngD3": "*",
+    "font-awesome": "fontawesome#~4.5.0",
+    "jquery": "~2.2.0"
+  }
+}

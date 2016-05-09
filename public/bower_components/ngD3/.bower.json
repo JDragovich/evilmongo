@@ -1,0 +1,35 @@
+{
+  "name": "ngD3",
+  "authors": [
+    "zzmp <zmp@umich.edu>"
+  ],
+  "description": "A d3 wrapper, the angular way. Delegates D3 to model ngD3, with factory $d3, to keep it out of the global scope.",
+  "main": "ngD3.min.js",
+  "keywords": [
+    "d3",
+    "ng",
+    "angular",
+    "wrapper"
+  ],
+  "license": "MIT",
+  "homepage": "https://www.github.com/zzmp/ngD3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.16"
+  },
+  "_release": "b2806b7629",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "b2806b76296a2f8da7ff24fd32d94c77c27638fc"
+  },
+  "_source": "https://github.com/zzmp/ngD3.git",
+  "_target": "*",
+  "_originalSource": "ngD3"
+}

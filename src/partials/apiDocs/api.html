@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1>Evilopoly Api Documentation</h1>
+    </div>
+</div>
+<div class="row api">
+    <div class="col-lg-3">
+        <div class="well link-bar .affix">
+            <p ng-repeat="entry in api | orderBy:entry.pattern">
+                <a scroll-on-click scrollTo="#entry{{$index}}" >{{entry.pattern}}</a>
+            </p>
+        </div>
+    </div>
+    <div class="col-lg-9"> 
+        <div class="api-entry" id="entry{{$index}}" ng-repeat="entry in api | orderBy:entry.pattern">
+            <div class="section">
+            <h3><span>{{entry.methods[0]}}</span>: {{entry.pattern}}</h3>
+            <p>{{entry.name}}</p>
+            </div>
+            <div class="section">
+                <h4>Parameters</h4>
+                <ul>
+                    <li ng-repeat="param in entry.params">{{param}}</li>
+                    <li ng-if="entry.params.length === 0">None</li>
+                </ul>
+            </div>
+            <h4>Example angular call</h4>
+            <pre><div><span ng-if="entry.middleware.length > 0">var authToken = localStorage.getItem("authToken"); //You only need to do this once per controller
+
+</span>$http.{{entry.methods[0] | lowercase}}("{{entry.pattern}}"<span ng-if="entry.params.length > 0 || entry.middleware.length > 0">,{<span ng-if="entry.middleware.length > 0">"x-auth-token":authToken,</span><span ng-if="entry.params.length > 0">"params":{<span ng-repeat="param in entry.params">"{{param}}":/*{{param}} here*/</span>}</span>}</span>).then(function(data){
+    // do stuff with you data object here...
+},function(error){
+    //handle any errors here... 
+});
+</div></pre>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div>{{jsonData}}</div>
+        <div ng-bind-html="data"></div>
+    </div>
+</div>
+

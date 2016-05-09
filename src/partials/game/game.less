@@ -1,0 +1,106 @@
+//some smaple less
+.game{
+    a{
+        color:aqua;
+    }
+    board{
+        margin-left:auto;
+        margin-right:auto;
+        .house-icon{
+            font-family:FontAwesome;
+            fill:green;
+        }
+        .hotel-icon{
+            font-family:FontAwesome;
+            fill:red;
+        }
+        .outer-border{
+            stroke:black;
+            stroke-width:1;
+            fill:none;
+        }
+        .inner-border{
+            stroke:black;
+            stroke-width:1;
+            fill:none;
+        }
+
+        .space{
+
+            .main-space{
+                fill: #FFFFFF;
+            }
+
+            .cell-divider{
+                stroke:black;
+                stroke-width:1;
+            }
+
+            .icon{
+                font-family: FontAwesome;
+            }
+
+            &.selected > .main-space{
+                fill:#EEEEEE;
+            }
+        }
+    }
+    .slide{
+        display: inline-block;
+        border: 2px solid black;
+        height: 200px;
+        width: 150px;
+        margin-left:auto;
+        margin-right:auto;
+        position: relative;
+
+        .color-bar{
+            height: 50px;
+            border-bottom:2px solid black;
+            padding: 5px;
+
+            .house{
+                float:left;
+                width:20px;
+                height: 20px;
+                background-color: green;
+                margin: 5px;
+            }
+            .hotel{
+                float:left;
+                width:40px;
+                height: 20px;
+                background-color: red;
+                border: 1px solid black;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        .title{
+            position:absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 0);
+            font-size:80%;
+            text-align: center;
+        }
+        .icon{
+            position:absolute;
+            font-family:FontAwesome,sans-serif;;
+            bottom: 50%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            font-size:300%;
+            text-align: center;
+        }
+    }
+
+
+    .right-slide{
+        display: inline-block;
+    }
+    .left-slide{
+        display: inline-block;
+    }
+}

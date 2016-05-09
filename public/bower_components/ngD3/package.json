@@ -1,0 +1,27 @@
+{
+  "name": "ngD3",
+  "version": "0.0.0",
+  "description": "A d3 wrapper, the angular way.",
+  "main": "test_server.js",
+  "scripts": {
+    "test": "node_modules/karma/bin/karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zzmp/ngD3.git"
+  },
+  "author": "Zach Pomerantz <zmp@umich.edu> (http://garabagne.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zzmp/ngD3/issues"
+  },
+  "homepage": "https://github.com/zzmp/ngD3",
+  "dependencies": {
+    "express": "^4.3.0",
+    "karma": "^0.12.16"
+  },
+  "devDependencies": {
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-jasmine": "^0.1.5"
+  }
+}
