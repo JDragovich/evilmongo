@@ -1,4 +1,4 @@
-angular.module("main").controller("LoginCtrl", ["$scope","$http","$sce","$sanitize","base64","$location","authService",function($scope,$http,$sce,$sanitize,base64,$location,authService){
+angular.module("main").controller("LoginCtrl", ["$scope","$http","$sce","$sanitize","base64","$location","authService","apiService",function($scope,$http,$sce,$sanitize,base64,$location,authService,apiService){
     $scope.userName = "";
     $scope.password = "";
     $scope.jsonData = "";
@@ -33,5 +33,13 @@ angular.module("main").controller("LoginCtrl", ["$scope","$http","$sce","$saniti
         else{
             $scope.data = "Passwords don't match";
         }
+    }
+
+    $scope.testAuth = function(){
+        apiService.get('/api/v1/test',null,true).then(function(data){
+            $scope.jsonData = data.data;
+        },function(err){
+            $scope.jsonData = err
+        });
     }
 }]);

@@ -26,7 +26,8 @@ module.exports = function(mongoose){
         game:{type:mongoose.Schema.Types.ObjectId,ref:'Game'},
         money:Number,
         space:Number,
-        cards:[{type:String}]
+        cards:[{type:String}],
+        stock:Number //total number of stocks issued.
     }));
 
     //a physical property represetned on teh board.
@@ -55,6 +56,7 @@ module.exports = function(mongoose){
         maturity:Boolean //loan or bond?
     }));
 
+    //any piece of anything.
     models.Equity = mongoose.model('Equity', new Schema({
         id:ObjectId,
         parentObject:{type:mongoose.Schema.Types.ObjectId}, // until i figure out a better way there is no type restriction on what a stock ca reference

@@ -2,7 +2,7 @@ var jwt = require('jsonwebtoken');
 
 module.exports={
     decoder:function(request,response,next){
-    var token = request.body.token || request.query.token || request.headers['x-access-token'];
+    var token = request.body.token || request.query.token || request.headers['x-auth-token'];
     if(token){
         jwt.verify(token,'thisismysecret',function(err,decode){
             if(err){

@@ -1,5 +1,4 @@
 var express = require('express');
-
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
@@ -11,9 +10,8 @@ var connection = mongoose.connect(process.env.MONGODB_URI || 'mongodb://heroku_f
     }
 });
 
-var models = require('./modules/models.js')(mongoose);
-
-var tokenDecoder = require('./modules/tokenDecoder.js');
+var models = require('./modules/models.js')(mongoose); //DB models
+var tokenDecoder = require('./modules/tokenDecoder.js'); //token decoder
 
 var app = express();
 
@@ -111,19 +109,8 @@ app.post('/register', function(request, response) {
 //router for protected api endpoints
 app.use('/api',tokenDecoder.decoder);
 
-//DEPRICATED adding food to total list. no longer referencing the total list.
-app.post('/api/addFood',function(request,response){
-    /*
-    food.addFood(request.body.name,request.user,function(err, foods){
-      if(foods){
-        response.json(foods);
-      }
-      else{
-        response.json(err);
-      }
-    });
-    */
-    food.getAllFoods(request,response);
+app.get('/api/v1/test',function(request,response){
+    response.send('Yes it works');
 });
 
 

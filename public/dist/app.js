@@ -90,7 +90,7 @@ angular.module("main").factory("apiService",["$http","authService",function($htt
     } 
 }]);
 angular.module("main").factory('authService',["$interval", "$location","$rootScope", function($interval,$location,$rootScope) {
-    
+
     //check if token is good on route change.
     $rootScope.$on('$locationChangeStart', function(event) {
         if($location.path() !== '/login'){
@@ -102,13 +102,13 @@ angular.module("main").factory('authService',["$interval", "$location","$rootSco
             }
         }
     });
-    
+
     //interface object
     var authService = {
       startAuthCheck: function(authToken){
-        localStorage.setItem("authToken", JSON.stringify(authToken));
+        localStorage.setItem("authToken", authToken.token);
         localStorage.setItem("authTokenExpires", authToken.expires);
-          
+
         var checker = $interval(function(){
             if(localStorage.authObjectExpires > new Date().getTime() ){
                 localStorage.removeItem("authToken");
@@ -125,9 +125,10 @@ angular.module("main").factory('authService',["$interval", "$location","$rootSco
           return {"x-auth-token":localStorage.authToken}
       }
   };
-  
+
   return authService;
 }]);
+
 
   angular.module("main").directive("board",['$d3','$route', function($d3,$route){
     return{
@@ -428,7 +429,7 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
         return array;
     }
 }]);
-angular.module("main").controller("LoginCtrl", ["$scope","$http","$sce","$sanitize","base64","$location","authService",function($scope,$http,$sce,$sanitize,base64,$location,authService){
+angular.module("main").controller("LoginCtrl", ["$scope","$http","$sce","$sanitize","base64","$location","authService","apiService",function($scope,$http,$sce,$sanitize,base64,$location,authService,apiService){
     $scope.userName = "";
     $scope.password = "";
     $scope.jsonData = "";
@@ -463,6 +464,14 @@ angular.module("main").controller("LoginCtrl", ["$scope","$http","$sce","$saniti
         else{
             $scope.data = "Passwords don't match";
         }
+    }
+
+    $scope.testAuth = function(){
+        apiService.get('/api/v1/test',null,true).then(function(data){
+            $scope.jsonData = data.data;
+        },function(err){
+            $scope.jsonData = err
+        });
     }
 }]);
 

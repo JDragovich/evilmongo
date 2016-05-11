@@ -1,5 +1,5 @@
 angular.module("main").factory('authService',["$interval", "$location","$rootScope", function($interval,$location,$rootScope) {
-    
+
     //check if token is good on route change.
     $rootScope.$on('$locationChangeStart', function(event) {
         if($location.path() !== '/login'){
@@ -11,13 +11,13 @@ angular.module("main").factory('authService',["$interval", "$location","$rootSco
             }
         }
     });
-    
+
     //interface object
     var authService = {
       startAuthCheck: function(authToken){
-        localStorage.setItem("authToken", JSON.stringify(authToken));
+        localStorage.setItem("authToken", authToken.token);
         localStorage.setItem("authTokenExpires", authToken.expires);
-          
+
         var checker = $interval(function(){
             if(localStorage.authObjectExpires > new Date().getTime() ){
                 localStorage.removeItem("authToken");
@@ -34,6 +34,6 @@ angular.module("main").factory('authService',["$interval", "$location","$rootSco
           return {"x-auth-token":localStorage.authToken}
       }
   };
-  
+
   return authService;
 }]);
