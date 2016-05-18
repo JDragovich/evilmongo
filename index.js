@@ -113,7 +113,46 @@ app.get('/api/v1/test',function(request,response){
     response.send('Yes it works');
 });
 
+app.get('/api/v1/getallgames',function(request,response){
+    models.Game.find(function(err,games){
+        response.json(games);
+    });
+});
 
+app.get('/api/v1/getgame/:id',function(request,response){
+    models.Game.findOne({_id:request.params.id}).populate("board").exec(function(err,popGame){
+        response.json(popGame);
+    });
+});
+
+app.post('/api/v1/creategame',function(request,response){
+    var createGame = require('./modules/createGame.js')(models);
+    var onGameCreated = function(err){
+        if(err){
+            console.log(err)
+        }
+        else{
+            models.Game.find(function(err,games){
+                response.json(games);
+            });
+        }
+    };
+
+    //instantiate new game
+    var game = new models.Game({name:request.body.name});
+
+    game.save(function(err,savedGame){
+        if(err){
+            console.log(err);
+        }
+        else{
+            savedGame.board = createGame.generateBoard(request.body.monopolies, savedGame);
+            savedGame.save(onGameCreated);
+        }
+    });
+
+
+})
 
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));

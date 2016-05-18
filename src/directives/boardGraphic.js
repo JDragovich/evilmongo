@@ -6,6 +6,18 @@
             //set the internal coordinate system to the inital size set by the
             var internalSize = parseInt(attrs.size) || $(element).parent().innerWidth();
             var cellHeight = internalSize/8; //arbitrary space height
+            //hash map for icon
+            scope.icons = {
+                "Chance":"\uf128",
+                "Go":"\uf0a5",
+                "Jail":"\uf19c",
+                "Go To Jail":"\uf24e",
+                "Free Parking":"\uf1b9",
+                "Community Chest":"\uf128",
+                "Utility":"\uf0eb",
+                "Railroad":"\uf239",
+                "Tax":"\uf295"
+            }
             //get methods
             var d3 = $d3;
             var route = $route;
@@ -134,17 +146,17 @@
                                 ;
                         }
 
-                        if(d.icon){
-                            group.append("text")
-                                .classed("icon",true)
-                                .attr("x",d.cellWidth * .5)
-                                .attr("y",cellHeight * .6)
-                                .attr("text-anchor","middle")
-                                .attr("font-size",d.cellWidth / 2)
-                                .attr("transform","rotate("+ d.rotation +","+ d.cellWidth * .5 +","+ cellHeight * .5 +")")
-                                .text(d.icon)
-                                ;
-                        }
+
+                        group.append("text")
+                            .classed("icon",true)
+                            .attr("x",d.cellWidth * .5)
+                            .attr("y",cellHeight * .6)
+                            .attr("text-anchor","middle")
+                            .attr("font-size",d.cellWidth / 2)
+                            .attr("transform","rotate("+ d.rotation +","+ d.cellWidth * .5 +","+ cellHeight * .5 +")")
+                            .text(scope.icons[d.category])
+                            ;
+
 
                         if(d.houseArray || d.hotel){
                             //determine icon color

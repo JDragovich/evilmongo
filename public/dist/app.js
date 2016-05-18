@@ -44,7 +44,7 @@ angular.module("main",['ngRoute','ngSanitize','ab-base64', 'ngD3']).config(['$ro
 
 angular.module("main").factory("apiService",["$http","authService",function($http,authService){
     var urlBase = "/api/v1/";
-    
+
     var makeUrl = function(fragment,arguments){
        var variable = "";
        if(arguments && typeof arguments === "object"){
@@ -56,17 +56,17 @@ angular.module("main").factory("apiService",["$http","authService",function($htt
 
        return fragment;
     };
-    
+
     return {
         setAPIbase:function(url){
            urlBase = "/api/v1/";
         },
         constructURL: function(fragment,arguments){
-           
+
            return makeUrl(fragment,arguments);
         },
         get: function(url,arguments,authenticate){
-            
+
             var finishedUrl = makeUrl(url,arguments);
             if(authenticate){
                 return $http.get(finishedUrl, {headers:authService.getAuthHeader()});
@@ -74,21 +74,22 @@ angular.module("main").factory("apiService",["$http","authService",function($htt
             else{
                 return $http.get(finishedUrl);
             }
-            
+
         },
         post: function(url,arguments,data,authenticate){
-            
-            var finishedUrl = url(url,arguments);
+
+            var finishedUrl = makeUrl(url,arguments);
             if(authenticate){
                 return $http.post(finishedUrl,data, {headers:authService.getAuthHeader()});
             }
             else{
                 return $http.post(finishedUrl);
             }
-            
+
         }
-    } 
+    }
 }]);
+
 angular.module("main").factory('authService',["$interval", "$location","$rootScope", function($interval,$location,$rootScope) {
 
     //check if token is good on route change.
@@ -138,6 +139,18 @@ angular.module("main").factory('authService',["$interval", "$location","$rootSco
             //set the internal coordinate system to the inital size set by the
             var internalSize = parseInt(attrs.size) || $(element).parent().innerWidth();
             var cellHeight = internalSize/8; //arbitrary space height
+            //hash map for icon
+            scope.icons = {
+                "Chance":"\uf128",
+                "Go":"\uf0a5",
+                "Jail":"\uf19c",
+                "Go To Jail":"\uf24e",
+                "Free Parking":"\uf1b9",
+                "Community Chest":"\uf128",
+                "Utility":"\uf0eb",
+                "Railroad":"\uf239",
+                "Tax":"\uf295"
+            }
             //get methods
             var d3 = $d3;
             var route = $route;
@@ -266,17 +279,17 @@ angular.module("main").factory('authService',["$interval", "$location","$rootSco
                                 ;
                         }
 
-                        if(d.icon){
-                            group.append("text")
-                                .classed("icon",true)
-                                .attr("x",d.cellWidth * .5)
-                                .attr("y",cellHeight * .6)
-                                .attr("text-anchor","middle")
-                                .attr("font-size",d.cellWidth / 2)
-                                .attr("transform","rotate("+ d.rotation +","+ d.cellWidth * .5 +","+ cellHeight * .5 +")")
-                                .text(d.icon)
-                                ;
-                        }
+
+                        group.append("text")
+                            .classed("icon",true)
+                            .attr("x",d.cellWidth * .5)
+                            .attr("y",cellHeight * .6)
+                            .attr("text-anchor","middle")
+                            .attr("font-size",d.cellWidth / 2)
+                            .attr("transform","rotate("+ d.rotation +","+ d.cellWidth * .5 +","+ cellHeight * .5 +")")
+                            .text(scope.icons[d.category])
+                            ;
+
 
                         if(d.houseArray || d.hotel){
                             //determine icon color
@@ -386,9 +399,10 @@ angular.module('main').controller("editProfileCtrl", ["$scope","apiService","aut
     };
 }]);
 angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sce","$sanitize","$timeout","authService","apiService","$routeParams",function($scope,$location,$http,$sce,$sanitize,$timeout,authService,apiService,$routeParams){
-        
+
     //Get game data
     apiService.get("/api/v1/getgame/:id",{id:$routeParams.gameId},true).then(function(data){
+        console.log(data.data);
         $scope.players = data.data;
         $scope.players.board.forEach(function(element,i){
             element.index = i;
@@ -404,10 +418,10 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
         console.log(error.data)
         $scope.error = $sce.trustAsHtml(error.data);
     });
-    
+
     //set slides
     $scope.setSlides = function(index){
-        
+
         if(index === 0){
             $scope.slides = [$scope.players.board[$scope.players.board.length - 1], $scope.players.board[0], $scope.players.board[1]];
         }
@@ -419,7 +433,7 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
         }
         $scope.$apply();
     };
-    
+
     //populate house array for data binding
     $scope.numToArr = function(num,element){
         var array = [];
@@ -429,6 +443,7 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
         return array;
     }
 }]);
+
 angular.module("main").controller("LoginCtrl", ["$scope","$http","$sce","$sanitize","base64","$location","authService","apiService",function($scope,$http,$sce,$sanitize,base64,$location,authService,apiService){
     $scope.userName = "";
     $scope.password = "";
@@ -476,30 +491,36 @@ angular.module("main").controller("LoginCtrl", ["$scope","$http","$sce","$saniti
 }]);
 
 angular.module("main").controller("DashCtrl", ["$scope","$location","apiService",function($scope,$location,apiService){
-    
+
     //get the games
+    /*
     apiService.get("/api/v1/getgames",null,true).then(function(data){
         $scope.yourGames = data.data;
     },function(error){
         console.log(error);
     });
-    
+    */
+
+    $scope.gameName = "";
+    $scope.monopolies = 0;
+
     apiService.get("/api/v1/getallgames",null,true).then(function(data){
         $scope.allGames = data.data;
         console.log(data.data);
     },function(error){
         console.log(error);
     });
-    
+
     $scope.createGame = function(){
-        apiService.post("/api/v1/getallgames",null,true).then(function(data){
+        apiService.post("/api/v1/creategame",null,{name:$scope.gameName,monopolies:$scope.monopolies},true).then(function(data){
             $scope.allGames = data.data;
+            $scope.gameName = "";
+            $scope.monopolies = 0;
         },function(error){
             console.log(error);
         });
     }
-    
-    
-    
+
 }]);
+
 //# sourceMappingURL=app.js.map

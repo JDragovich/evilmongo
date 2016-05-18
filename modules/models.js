@@ -16,8 +16,14 @@ module.exports = function(mongoose){
 
     models.Game = mongoose.model('Game', new Schema({
         id:ObjectId,
+        name:{type:String, unique:true},
         players:[{type:mongoose.Schema.Types.ObjectId,ref:'Player'}],
-        board:{type:mongoose.Schema.Types.ObjectId,ref:'Property'}
+        board:[{
+            category:{type:String,enum:['Chance','Property','Go','Jail','Go To Jail','Free Parking','Railroad','Community Chest','Utility','Tax']},
+            name:String,
+            color:String,
+            property:{type:mongoose.Schema.Types.ObjectId,ref:'Property'}
+        }]//array of objects that reresent the spaces.
     }));
 
     models.Player = mongoose.model('Player', new Schema({
@@ -33,12 +39,12 @@ module.exports = function(mongoose){
     //a physical property represetned on teh board.
     models.Property = mongoose.model('Property', new Schema({
         id:ObjectId,
+        name:String,
         game:{type:mongoose.Schema.Types.ObjectId,ref:'Game'},
         owner:{type:mongoose.Schema.Types.ObjectId,ref:'Player'},
         developable:Boolean,
         value:[{type:Number}],
         houses:Number,
-        color:String,
         buildingCost:Number,
         stock:Number //total number of stocks issued.
     }));

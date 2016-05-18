@@ -12,7 +12,7 @@
                     <div class="house" ng-if="!property.hotel" ng-repeat="house in property.houseArray"></div>
                     <div class="hotel" ng-if="property.hotel" ></div>
                 </div>
-                <p class="icon" style="font-family:FontAwesome">{{property.icon}}</p>
+                <p class="icon" style="font-family:FontAwesome">{{icons[property.category]}}</p>
                 <p class="title">{{property.name}}</p>
             </div>
         </div>
