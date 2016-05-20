@@ -10,6 +10,7 @@ module.exports = function(models){
 
     methods.generateBoard = function(numMonops,game,callback){
         var boardArray = [];
+        var properties = [];
         var cornerSpace = ['Go','Jail','Free Parking','Go To Jail'];
 
         //space generator. Creates a singlton instance that randomly chooses from the arguments passed.
@@ -62,13 +63,15 @@ module.exports = function(models){
                     }
                 }
                 else if(type === "Property"){
+
                     var spaceName = pickName();
+
                     var property = models.Property({
                         name:spaceName,
                         game:game._id,
                         owner:undefined,
                         developable:true,
-                        value:[2,10,30,90,160,250],
+                        value:[val],
                         houses:0,
                         buildingCost:50,
                         stock:0
@@ -127,10 +130,6 @@ module.exports = function(models){
 
         return boardArray;
     };
-
-    methods.onGameCreated = function(game){
-        console.log(game);
-    }
 
     return methods;
 };

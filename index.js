@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var cryptography = require('crypto');
 
-var connection = mongoose.connect(process.env.MONGODB_URI || 'mongodb://heroku_f6xqcdzv:bfp91r97e11a59c8b5ubhb2uv5@ds017582.mlab.com:17582/heroku_f6xqcdzv', function(error){
+var connection = mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/db_name', function(error){
     if(error){
         console.log(error);
     }
@@ -126,26 +126,34 @@ app.get('/api/v1/getgame/:id',function(request,response){
 });
 
 app.post('/api/v1/creategame',function(request,response){
+    console.log(request.user + " request that game "+ request.body.name + " be created" );
     var createGame = require('./modules/createGame.js')(models);
-    var onGameCreated = function(err){
-        if(err){
-            console.log(err)
-        }
-        else{
-            models.Game.find(function(err,games){
-                response.json(games);
-            });
-        }
-    };
+    var time = 0; 
 
     //instantiate new game
     var game = new models.Game({name:request.body.name});
 
-    game.save(function(err,savedGame){
+    var onGameCreated = function(err,createdGame){
         if(err){
-            console.log(err);
+            console.log(err)
+            response.json({message:"error finding games"})
         }
         else{
+            time =( Date.now() - time) / 1000
+            console.log(createdGame.name + " created successfully in " + time + " seconds");
+            models.Game.find(function(err,games){
+                response.json({message:createdGame.name + " created successfully", games:games});
+            });
+        }
+    };
+
+    game.save(function(err,savedGame){
+        if(err){
+            response.status(500).json({message:"Game Already Exists"})
+        }
+        else{
+            console.log(savedGame.name + " started");
+            time = Date.now();
             savedGame.board = createGame.generateBoard(request.body.monopolies, savedGame);
             savedGame.save(onGameCreated);
         }

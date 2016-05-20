@@ -503,6 +503,8 @@ angular.module("main").controller("DashCtrl", ["$scope","$location","apiService"
 
     $scope.gameName = "";
     $scope.monopolies = 0;
+    $scope.message = "";
+    $scope.danger = false;
 
     apiService.get("/api/v1/getallgames",null,true).then(function(data){
         $scope.allGames = data.data;
@@ -513,11 +515,14 @@ angular.module("main").controller("DashCtrl", ["$scope","$location","apiService"
 
     $scope.createGame = function(){
         apiService.post("/api/v1/creategame",null,{name:$scope.gameName,monopolies:$scope.monopolies},true).then(function(data){
-            $scope.allGames = data.data;
+            $scope.allGames = data.data.games;
             $scope.gameName = "";
             $scope.monopolies = 0;
+            $scope.message = data.data.message;
+            $scope.danger = false;
         },function(error){
-            console.log(error);
+            $scope.message = error.data.message;
+            $scope.danger = true;
         });
     }
 
