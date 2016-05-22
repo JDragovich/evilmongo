@@ -167,7 +167,6 @@
                                 var iconClass = "house-icon";
                             }
 
-
                             group.append("text")
                                 .classed(iconClass,true)
                                 .attr("text-anchor","middle")
@@ -176,12 +175,12 @@
                                 .attr("font-size",d.cellWidth / 5)
                                 .attr("transform","rotate("+ d.rotation +","+ d.cellWidth * .5 +","+ cellHeight * .875 +")")
                                 .text(function(){
-                                    if(d.hotel){
+                                    if(d.property.hotel){
                                         return "\uf1ad"
                                     }
                                     else{
                                         var houses = " "
-                                        for(var i =0; i<d.houseArray.length; i++){
+                                        for(var i =0; i<d.property.houseArray.length; i++){
                                             houses += "\uf015 "
                                         }
                                         return houses

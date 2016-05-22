@@ -300,7 +300,6 @@ angular.module("main").factory('authService',["$interval", "$location","$rootSco
                                 var iconClass = "house-icon";
                             }
 
-
                             group.append("text")
                                 .classed(iconClass,true)
                                 .attr("text-anchor","middle")
@@ -309,12 +308,12 @@ angular.module("main").factory('authService',["$interval", "$location","$rootSco
                                 .attr("font-size",d.cellWidth / 5)
                                 .attr("transform","rotate("+ d.rotation +","+ d.cellWidth * .5 +","+ cellHeight * .875 +")")
                                 .text(function(){
-                                    if(d.hotel){
+                                    if(d.property.hotel){
                                         return "\uf1ad"
                                     }
                                     else{
                                         var houses = " "
-                                        for(var i =0; i<d.houseArray.length; i++){
+                                        for(var i =0; i<d.property.houseArray.length; i++){
                                             houses += "\uf015 "
                                         }
                                         return houses
@@ -406,11 +405,6 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
         $scope.players = data.data;
         $scope.players.board.forEach(function(element,i){
             element.index = i;
-            if(element.color){
-                element.houses = Math.round(Math.random() * 4);
-                element.hotel = Math.random() > .75 ? true : false;
-            }
-            element.houseArray = $scope.numToArr(element.houses, element);
         });
         $scope.slides = $scope.players.board.slice(0,3);
         //console.log($scope.players.board);
@@ -506,12 +500,23 @@ angular.module("main").controller("DashCtrl", ["$scope","$location","apiService"
     $scope.message = "";
     $scope.danger = false;
 
-    apiService.get("/api/v1/getallgames",null,true).then(function(data){
-        $scope.allGames = data.data;
-        console.log(data.data);
-    },function(error){
-        console.log(error);
-    });
+    $scope.getGames = function(){
+
+        apiService.get("/api/v1/getplayergames",null,true).then(function(data){
+            $scope.yourGames = data.data;
+            console.log(data.data);
+        },function(error){
+            console.log(error);
+        });
+
+        apiService.get("/api/v1/getallgames",null,true).then(function(data){
+            $scope.allGames = data.data;
+            console.log(data.data);
+        },function(error){
+            console.log(error);
+        });
+
+    };
 
     $scope.createGame = function(){
         apiService.post("/api/v1/creategame",null,{name:$scope.gameName,monopolies:$scope.monopolies},true).then(function(data){
@@ -524,8 +529,22 @@ angular.module("main").controller("DashCtrl", ["$scope","$location","apiService"
             $scope.message = error.data.message;
             $scope.danger = true;
         });
+    };
+
+    $scope.joinGame = function(gameId){
+        console.log(gameId);
+        apiService.post("/api/v1/addplayer",null,{game:gameId},true).then(function(data){
+            $scope.message = data.data.message;
+            $scope.danger = false;
+            $scope.getGames();
+        },function(error){
+            $scope.message = error.data.message;
+            $scope.danger = true;
+        });
     }
 
+    //call get games
+    $scope.getGames();
 }]);
 
 //# sourceMappingURL=app.js.map

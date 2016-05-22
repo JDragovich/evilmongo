@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var cryptography = require('crypto');
 
-var connection = mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/db_name', function(error){
+var connection = mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/evilmongo', function(error){
     if(error){
         console.log(error);
     }
@@ -12,6 +12,7 @@ var connection = mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhos
 
 var models = require('./modules/models.js')(mongoose); //DB models
 var tokenDecoder = require('./modules/tokenDecoder.js'); //token decoder
+var createGame = require('./modules/createGame.js')(models);
 
 var app = express();
 
@@ -112,55 +113,39 @@ app.use('/api',tokenDecoder.decoder);
 app.get('/api/v1/test',function(request,response){
     response.send('Yes it works');
 });
-
+//get all games that a player is not a prt of already
 app.get('/api/v1/getallgames',function(request,response){
-    models.Game.find(function(err,games){
+    models.Game.find({"players.user":{$ne:request.user}},function(err,games){
+        response.json(games);
+    });
+});
+//get all games that teh current user is a part of.
+app.get('/api/v1/getplayergames',function(request,response){
+    models.Game.find({"players.user":request.user},function(err,games){
         response.json(games);
     });
 });
 
 app.get('/api/v1/getgame/:id',function(request,response){
-    models.Game.findOne({_id:request.params.id}).populate("board").exec(function(err,popGame){
-        response.json(popGame);
-    });
-});
 
-app.post('/api/v1/creategame',function(request,response){
-    console.log(request.user + " request that game "+ request.body.name + " be created" );
-    var createGame = require('./modules/createGame.js')(models);
-    var time = 0; 
-
-    //instantiate new game
-    var game = new models.Game({name:request.body.name});
-
-    var onGameCreated = function(err,createdGame){
-        if(err){
-            console.log(err)
-            response.json({message:"error finding games"})
-        }
-        else{
-            time =( Date.now() - time) / 1000
-            console.log(createdGame.name + " created successfully in " + time + " seconds");
-            models.Game.find(function(err,games){
-                response.json({message:createdGame.name + " created successfully", games:games});
-            });
+    //population options
+    var population = {
+        path:"board",
+        populate:{
+            path:"property",
+            model:"Property"
         }
     };
 
-    game.save(function(err,savedGame){
-        if(err){
-            response.status(500).json({message:"Game Already Exists"})
-        }
-        else{
-            console.log(savedGame.name + " started");
-            time = Date.now();
-            savedGame.board = createGame.generateBoard(request.body.monopolies, savedGame);
-            savedGame.save(onGameCreated);
-        }
+    //populate game and return
+    models.Game.findOne({_id:request.params.id},function(err,game){
+        if(err){console.log(err)}
+        response.json(game);
     });
+});
 
-
-})
+app.post('/api/v1/creategame',createGame.createGame)
+app.post('/api/v1/addplayer',createGame.addPlayer)
 
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));

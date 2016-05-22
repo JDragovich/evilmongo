@@ -6,11 +6,6 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
         $scope.players = data.data;
         $scope.players.board.forEach(function(element,i){
             element.index = i;
-            if(element.color){
-                element.houses = Math.round(Math.random() * 4);
-                element.hotel = Math.random() > .75 ? true : false;
-            }
-            element.houseArray = $scope.numToArr(element.houses, element);
         });
         $scope.slides = $scope.players.board.slice(0,3);
         //console.log($scope.players.board);

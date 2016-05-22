@@ -6,7 +6,7 @@
                 <tr>
                     <th>Game name</th>
                     <th>Turn</th>
-                    <th>Your turn</th>
+                    <th>Started</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -14,8 +14,8 @@
                 <tr ng-if="yourGames !== 'false'" ng-repeat="yourGame in yourGames">
                     <td>{{yourGame.name}}</td>
                     <td>{{yourGame.turn}}</td>
-                    <td>{{yourGmae.playerTurn}}</td>
-                    <td><button class="btn btn-primary" href="#/playerDash/{{yourGame.id}}">Go to Game</button></td>
+                    <td>{{yourGame.started}}</td>
+                    <td><a href="/#/playerDash/{{yourGame._id}}"><button class="btn btn-primary" >Go to Game</button></a></td>
                 </tr>
                 <tr ng-if="yourGames === 'false'">
                     <td>You are not part of any games</td>
@@ -28,7 +28,7 @@
                 <tr>
                     <th>Game name</th>
                     <th>Turn</th>
-                    <th>Your turn</th>
+                    <th>Started</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -36,8 +36,11 @@
                 <tr ng-repeat="yourGame in allGames">
                     <td>{{yourGame.name}}</td>
                     <td>{{yourGame.turn}}</td>
-                    <td>{{yourGmae.playerTurn}}</td>
-                    <td><a href="/#/playerDash/{{yourGame._id}}"><button class="btn btn-primary" >Go to Game</button></a></td>
+                    <td>{{yourGame.started}}</td>
+                    <td>
+                        <a href="/#/playerDash/{{yourGame._id}}"><button class="btn btn-primary" >Go to Game</button></a>
+                        <button class="btn btn-primary" ng-click="joinGame(yourGame._id)">Join Game</button>
+                    </td>
                 </tr>
             </tbody>
         </table>

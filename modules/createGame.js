@@ -1,6 +1,12 @@
 module.exports = function(models){
     var fs = require("fs");
+    //exported methods
     var methods = {};
+
+    //internal methods
+    var internal = {};
+
+    var time = 0; //time variable for timiming requests
     var names = [];
     fs.readFile('streetNames.txt','utf8',function(err,data){
         names = data.split("\n");
@@ -8,7 +14,7 @@ module.exports = function(models){
 
     var nameHash = {};
 
-    methods.generateBoard = function(numMonops,game,callback){
+    internal._generateBoard = function(numMonops,game){
         var boardArray = [];
         var properties = [];
         var cornerSpace = ['Go','Jail','Free Parking','Go To Jail'];
@@ -22,69 +28,48 @@ module.exports = function(models){
 
                 if(type === "Railroad"){
 
-                    var property = models.Property({
+                    return {
+                        category:type,
                         name:"Railroad",
-                        game:game._id,
                         owner:undefined,
                         developable:false,
                         value:[200],
                         houses:0,
                         buildingCost:50,
                         stock:0
-                    });
+                    };
 
-                    property.save();
-
-                    return {
-                        category:type,
-                        name:"Railroad",
-                        property:undefined
-                    }
                 }
                 else if(type === "Utility"){
 
-                    var property = models.Property({
+                    return {
+                        category:type,
                         name:"Utility",
-                        game:game._id,
                         owner:undefined,
                         developable:false,
                         value:[100],
                         houses:0,
                         buildingCost:50,
                         stock:0
-                    });
+                    };
 
-                    property.save();
-
-                    return {
-                        category:type,
-                        name:"Utility",
-                        property:undefined
-                    }
                 }
                 else if(type === "Property"){
 
                     var spaceName = pickName();
 
-                    var property = models.Property({
+                    return {
+                        category:type,
                         name:spaceName,
-                        game:game._id,
                         owner:undefined,
                         developable:true,
+                        color:color,
                         value:[val],
                         houses:0,
                         buildingCost:50,
                         stock:0
-                    });
+                    };
 
-                    property.save();
-
-                    return {
-                        category:type,
-                        name:spaceName,
-                        color:color,
-                        property:property._id
-                    }
                 }
                 else{
                     return {
@@ -113,6 +98,8 @@ module.exports = function(models){
             var cornerGen = new SpaceGenerator();
             //add corner piece
             boardArray.push(cornerGen(cornerSpace[i]));
+
+            //loop through all the monopolies per side and add spaces
             for(var j= 0; j<numMonops; j++){
                 var color = '#'+Math.floor(Math.random()*16777215).toString(16); //random hex color
                 var baseVal = 100 * i;
@@ -127,8 +114,53 @@ module.exports = function(models){
                 }
             }
         }
-
         return boardArray;
+    };
+
+
+    methods.createGame = function(request,response){
+        console.log(request.user + " request that game "+ request.body.name + " be created" );
+        console.log(request.body.name + " started");
+        time = Date.now();
+
+        //instantiate new game
+        var game = new models.Game({
+            name:request.body.name,
+            started:false,
+            board:internal._generateBoard(request.body.monopolies)
+        });
+
+        //when game is saved generate teh baord and resave
+        game.save(function(err,savedGame){
+            if(err){
+                response.status(500).json({message:"Game Already Exists"})
+            }
+            else{
+                time =( Date.now() - time) / 1000
+                console.log(savedGame.name + " created successfully in " + time + " seconds");
+                models.Game.find({"players.user":{$ne:request.user}},function(err,games){
+                    response.json({message:savedGame.name + " created successfully", games:games});
+                });
+            }
+        });
+    };
+
+    methods.addPlayer = function(request,response){
+        var player = {
+            user:request.user,
+            money:1500,
+            space:0,
+            cards:[],
+            stock:0 //total number of stocks issued.
+        }
+        models.Game.update({_id:request.body.game, 'players.user': {$ne: request.user}},{$push: {players: player}}, function(err,game){
+            if(game.nModified !=0){
+                response.json({message:request.user+" joined game", danger:false})
+            }
+            else{
+                response.status(500).json({message:request.user+" could not join game", danger:true});
+            }
+        });
     };
 
     return methods;

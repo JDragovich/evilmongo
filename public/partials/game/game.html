@@ -9,7 +9,7 @@
             <p><strong>My Properties:</strong> None</p>
             <div class="slide" ng-repeat="property in slides | orderBy:'-'">
                 <div class="color-bar" ng-if="property.color" style="background-color:{{property.color}}">
-                    <div class="house" ng-if="!property.hotel" ng-repeat="house in property.houseArray"></div>
+                    <div class="house" ng-if="!property.hotel" ></div>
                     <div class="hotel" ng-if="property.hotel" ></div>
                 </div>
                 <p class="icon" style="font-family:FontAwesome">{{icons[property.category]}}</p>
