@@ -24,6 +24,7 @@ module.exports = function(mongoose){
             cards:[{type:String}],
             stock:Number //total number of stocks issued.
         }],
+        turn:Number,
         started:{type:Boolean, defualt:false},
         board:[{
             category:{type:String,enum:['Chance','Property','Go','Jail','Go To Jail','Free Parking','Railroad','Community Chest','Utility','Tax']},
@@ -37,29 +38,6 @@ module.exports = function(mongoose){
         }]//array of objects that reresent the spaces.
     }));
 
-    models.Player = mongoose.model('Player', new Schema({
-        id:ObjectId,
-        user:String,
-        game:{type:mongoose.Schema.Types.ObjectId,ref:'Game'},
-        money:Number,
-        space:Number,
-        cards:[{type:String}],
-        stock:Number //total number of stocks issued.
-    }).index({user:1,game:-1},{unique:true}));
-    /*
-    //a physical property represetned on teh board.
-    models.Property = mongoose.model('Property', new Schema({
-        id:ObjectId,
-        name:String,
-        game:{type:mongoose.Schema.Types.ObjectId,ref:'Game'},
-        owner:{type:mongoose.Schema.Types.ObjectId,ref:'Player'},
-        developable:Boolean,
-        value:[{type:Number}],
-        houses:Number,
-        buildingCost:Number,
-        stock:Number //total number of stocks issued.
-    }));
-    */
     //any long term debt
     models.Debt = mongoose.model('Debt', new Schema({
         id:ObjectId,

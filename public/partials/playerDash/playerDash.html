@@ -17,7 +17,7 @@
                     <td>{{yourGame.started}}</td>
                     <td><a href="/#/playerDash/{{yourGame._id}}"><button class="btn btn-primary" >Go to Game</button></a></td>
                 </tr>
-                <tr ng-if="yourGames === 'false'">
+                <tr ng-if="yourGames.length === 0">
                     <td>You are not part of any games</td>
                 </tr>
             </tbody>
@@ -41,6 +41,9 @@
                         <a href="/#/playerDash/{{yourGame._id}}"><button class="btn btn-primary" >Go to Game</button></a>
                         <button class="btn btn-primary" ng-click="joinGame(yourGame._id)">Join Game</button>
                     </td>
+                </tr>
+                <tr ng-if="allGames.length === 0">
+                    <td>There are no games to join</td>
                 </tr>
             </tbody>
         </table>

@@ -16,7 +16,6 @@ module.exports = function(models){
 
     internal._generateBoard = function(numMonops,game){
         var boardArray = [];
-        var properties = [];
         var cornerSpace = ['Go','Jail','Free Parking','Go To Jail'];
 
         //space generator. Creates a singlton instance that randomly chooses from the arguments passed.
@@ -126,6 +125,7 @@ module.exports = function(models){
         //instantiate new game
         var game = new models.Game({
             name:request.body.name,
+            turn:0,
             started:false,
             board:internal._generateBoard(request.body.monopolies)
         });
@@ -152,7 +152,8 @@ module.exports = function(models){
             space:0,
             cards:[],
             stock:0 //total number of stocks issued.
-        }
+        };
+
         models.Game.update({_id:request.body.game, 'players.user': {$ne: request.user}},{$push: {players: player}}, function(err,game){
             if(game.nModified !=0){
                 response.json({message:request.user+" joined game", danger:false})

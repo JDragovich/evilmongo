@@ -291,7 +291,8 @@ angular.module("main").factory('authService',["$interval", "$location","$rootSco
                             ;
 
 
-                        if(d.houseArray || d.hotel){
+                        if(d.houseArray.length !== 0 || d.hotel){
+                            console.log(d.houseArray)
                             //determine icon color
                             if(d.hotel){
                                 var iconClass = "hotel-icon";
@@ -308,12 +309,12 @@ angular.module("main").factory('authService',["$interval", "$location","$rootSco
                                 .attr("font-size",d.cellWidth / 5)
                                 .attr("transform","rotate("+ d.rotation +","+ d.cellWidth * .5 +","+ cellHeight * .875 +")")
                                 .text(function(){
-                                    if(d.property.hotel){
+                                    if(d.hotel){
                                         return "\uf1ad"
                                     }
                                     else{
                                         var houses = " "
-                                        for(var i =0; i<d.property.houseArray.length; i++){
+                                        for(var i =0; i<d.houseArray.length; i++){
                                             houses += "\uf015 "
                                         }
                                         return houses
@@ -405,6 +406,7 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
         $scope.players = data.data;
         $scope.players.board.forEach(function(element,i){
             element.index = i;
+            element.houseArray = $scope.numToArr(i,element);
         });
         $scope.slides = $scope.players.board.slice(0,3);
         //console.log($scope.players.board);
@@ -429,13 +431,28 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
     };
 
     //populate house array for data binding
-    $scope.numToArr = function(num,element){
+    $scope.numToArr = function(element){
         var array = [];
-        for(var i=0; i<num; i++){
+        for(var i=0; i<element.houses; i++){
             array.push({index:i,name:element.name + " " + (i + 1)});
         }
         return array;
-    }
+    };
+
+    $scope.endTurn = function(){
+        apiService.post("/api/v1/endTurn",null,{game:$scope.players._id},true).then(function(data){
+            console.log(data.data.game);
+            $scope.players = data.data.game;
+            $scope.players.board.forEach(function(element,i){
+                element.index = i;
+                element.houseArray = $scope.numToArr(i,element);
+            });
+            $scope.slides = $scope.players.board.slice(0,3);
+        },function(error){
+            console.log(error.data)
+            $scope.error = $sce.trustAsHtml(error.data);
+        });
+    };
 }]);
 
 angular.module("main").controller("LoginCtrl", ["$scope","$http","$sce","$sanitize","base64","$location","authService","apiService",function($scope,$http,$sce,$sanitize,base64,$location,authService,apiService){
@@ -486,15 +503,6 @@ angular.module("main").controller("LoginCtrl", ["$scope","$http","$sce","$saniti
 
 angular.module("main").controller("DashCtrl", ["$scope","$location","apiService",function($scope,$location,apiService){
 
-    //get the games
-    /*
-    apiService.get("/api/v1/getgames",null,true).then(function(data){
-        $scope.yourGames = data.data;
-    },function(error){
-        console.log(error);
-    });
-    */
-
     $scope.gameName = "";
     $scope.monopolies = 0;
     $scope.message = "";
@@ -532,7 +540,6 @@ angular.module("main").controller("DashCtrl", ["$scope","$location","apiService"
     };
 
     $scope.joinGame = function(gameId){
-        console.log(gameId);
         apiService.post("/api/v1/addplayer",null,{game:gameId},true).then(function(data){
             $scope.message = data.data.message;
             $scope.danger = false;

@@ -9,12 +9,13 @@
             <p><strong>My Properties:</strong> None</p>
             <div class="slide" ng-repeat="property in slides | orderBy:'-'">
                 <div class="color-bar" ng-if="property.color" style="background-color:{{property.color}}">
-                    <div class="house" ng-if="!property.hotel" ></div>
+                    <div class="house" ng-if="!property.hotel && property.houses !== 0" ng-repeat="house in property.houseArray"></div>
                     <div class="hotel" ng-if="property.hotel" ></div>
                 </div>
                 <p class="icon" style="font-family:FontAwesome">{{icons[property.category]}}</p>
                 <p class="title">{{property.name}}</p>
             </div>
+            <button class="btn btn-default" ng-click="endTurn()">End Turn</button>
         </div>
         <div class="col-lg-6">
             <board size="400"></board>

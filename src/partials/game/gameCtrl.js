@@ -6,6 +6,7 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
         $scope.players = data.data;
         $scope.players.board.forEach(function(element,i){
             element.index = i;
+            element.houseArray = $scope.numToArr(i,element);
         });
         $scope.slides = $scope.players.board.slice(0,3);
         //console.log($scope.players.board);
@@ -30,11 +31,26 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
     };
 
     //populate house array for data binding
-    $scope.numToArr = function(num,element){
+    $scope.numToArr = function(element){
         var array = [];
-        for(var i=0; i<num; i++){
+        for(var i=0; i<element.houses; i++){
             array.push({index:i,name:element.name + " " + (i + 1)});
         }
         return array;
-    }
+    };
+
+    $scope.endTurn = function(){
+        apiService.post("/api/v1/endTurn",null,{game:$scope.players._id},true).then(function(data){
+            console.log(data.data.game);
+            $scope.players = data.data.game;
+            $scope.players.board.forEach(function(element,i){
+                element.index = i;
+                element.houseArray = $scope.numToArr(i,element);
+            });
+            $scope.slides = $scope.players.board.slice(0,3);
+        },function(error){
+            console.log(error.data)
+            $scope.error = $sce.trustAsHtml(error.data);
+        });
+    };
 }]);

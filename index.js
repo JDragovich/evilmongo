@@ -12,7 +12,8 @@ var connection = mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhos
 
 var models = require('./modules/models.js')(mongoose); //DB models
 var tokenDecoder = require('./modules/tokenDecoder.js'); //token decoder
-var createGame = require('./modules/createGame.js')(models);
+var createGame = require('./modules/createGame.js')(models); //game creation and management
+var gameControl = require('./modules/gameControl.js')(models); //game control
 
 var app = express();
 
@@ -113,39 +114,33 @@ app.use('/api',tokenDecoder.decoder);
 app.get('/api/v1/test',function(request,response){
     response.send('Yes it works');
 });
+
 //get all games that a player is not a prt of already
 app.get('/api/v1/getallgames',function(request,response){
     models.Game.find({"players.user":{$ne:request.user}},function(err,games){
         response.json(games);
     });
 });
+
 //get all games that teh current user is a part of.
 app.get('/api/v1/getplayergames',function(request,response){
     models.Game.find({"players.user":request.user},function(err,games){
+        if(err){console.log(err)}
         response.json(games);
     });
 });
 
 app.get('/api/v1/getgame/:id',function(request,response){
-
-    //population options
-    var population = {
-        path:"board",
-        populate:{
-            path:"property",
-            model:"Property"
-        }
-    };
-
-    //populate game and return
     models.Game.findOne({_id:request.params.id},function(err,game){
         if(err){console.log(err)}
         response.json(game);
     });
 });
 
-app.post('/api/v1/creategame',createGame.createGame)
-app.post('/api/v1/addplayer',createGame.addPlayer)
+app.post('/api/v1/creategame',createGame.createGame);
+app.post('/api/v1/addplayer',createGame.addPlayer);
+
+app.post('/api/v1/endTurn',gameControl.endTurn)
 
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));

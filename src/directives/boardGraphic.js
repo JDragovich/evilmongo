@@ -158,7 +158,8 @@
                             ;
 
 
-                        if(d.houseArray || d.hotel){
+                        if(d.houseArray.length !== 0 || d.hotel){
+                            console.log(d.houseArray)
                             //determine icon color
                             if(d.hotel){
                                 var iconClass = "hotel-icon";
@@ -175,12 +176,12 @@
                                 .attr("font-size",d.cellWidth / 5)
                                 .attr("transform","rotate("+ d.rotation +","+ d.cellWidth * .5 +","+ cellHeight * .875 +")")
                                 .text(function(){
-                                    if(d.property.hotel){
+                                    if(d.hotel){
                                         return "\uf1ad"
                                     }
                                     else{
                                         var houses = " "
-                                        for(var i =0; i<d.property.houseArray.length; i++){
+                                        for(var i =0; i<d.houseArray.length; i++){
                                             houses += "\uf015 "
                                         }
                                         return houses

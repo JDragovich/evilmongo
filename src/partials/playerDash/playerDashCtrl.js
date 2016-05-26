@@ -1,14 +1,5 @@
 angular.module("main").controller("DashCtrl", ["$scope","$location","apiService",function($scope,$location,apiService){
 
-    //get the games
-    /*
-    apiService.get("/api/v1/getgames",null,true).then(function(data){
-        $scope.yourGames = data.data;
-    },function(error){
-        console.log(error);
-    });
-    */
-
     $scope.gameName = "";
     $scope.monopolies = 0;
     $scope.message = "";
@@ -46,7 +37,6 @@ angular.module("main").controller("DashCtrl", ["$scope","$location","apiService"
     };
 
     $scope.joinGame = function(gameId){
-        console.log(gameId);
         apiService.post("/api/v1/addplayer",null,{game:gameId},true).then(function(data){
             $scope.message = data.data.message;
             $scope.danger = false;
