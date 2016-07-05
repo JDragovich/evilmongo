@@ -131,16 +131,25 @@ app.get('/api/v1/getplayergames',function(request,response){
 });
 
 app.get('/api/v1/getgame/:id',function(request,response){
+    var getCurrentPlayer = function(players){
+        for(var i=0; i<players.length; i++){
+            if(players[i].user === request.user){
+                return players[i];
+            }
+        }
+    };
+
     models.Game.findOne({_id:request.params.id},function(err,game){
         if(err){console.log(err)}
-        response.json(game);
+        response.json({game:game, playerInfo:getCurrentPlayer(game.players)});
     });
 });
 
 app.post('/api/v1/creategame',createGame.createGame);
 app.post('/api/v1/addplayer',createGame.addPlayer);
 
-app.post('/api/v1/endTurn',gameControl.endTurn)
+app.post('/api/v1/endTurn',gameControl.endTurn);
+app.post('/api/v1/buyproperty',gameControl.buyProperty);
 
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));

@@ -1,19 +1,24 @@
 angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sce","$sanitize","$timeout","authService","apiService","$routeParams",function($scope,$location,$http,$sce,$sanitize,$timeout,authService,apiService,$routeParams){
 
-    //Get game data
-    apiService.get("/api/v1/getgame/:id",{id:$routeParams.gameId},true).then(function(data){
+    //game data handler
+    var onGameDataReceived = function(data){
         console.log(data.data);
-        $scope.players = data.data;
+        $scope.players = data.data.game;
+        $scope.playerInfo = data.data.playerInfo;
         $scope.players.board.forEach(function(element,i){
             element.index = i;
             element.houseArray = $scope.numToArr(i,element);
         });
         $scope.slides = $scope.players.board.slice(0,3);
         //console.log($scope.players.board);
-    },function(error){
+    }
+
+    //Get game data
+    apiService.get("/api/v1/getgame/:id",{id:$routeParams.gameId},true).then(onGameDataReceived,function(error){
         console.log(error.data)
         $scope.error = $sce.trustAsHtml(error.data);
     });
+
 
     //set slides
     $scope.setSlides = function(index){
@@ -40,15 +45,13 @@ angular.module("main").controller("GameCtrl", ["$scope","$location","$http","$sc
     };
 
     $scope.endTurn = function(){
-        apiService.post("/api/v1/endTurn",null,{game:$scope.players._id},true).then(function(data){
-            console.log(data.data.game);
-            $scope.players = data.data.game;
-            $scope.players.board.forEach(function(element,i){
-                element.index = i;
-                element.houseArray = $scope.numToArr(i,element);
-            });
-            $scope.slides = $scope.players.board.slice(0,3);
-        },function(error){
+        apiService.post("/api/v1/endTurn",null,{game:$scope.players._id},true).then(onGameDataReceived,function(error){
+            console.log(error.data)
+            $scope.error = $sce.trustAsHtml(error.data);
+        });
+    };
+    $scope.buyProperty = function(property){
+        apiService.post("/api/v1/buyproperty",null,{property:property},true).then(onGameDataReceived,function(error){
             console.log(error.data)
             $scope.error = $sce.trustAsHtml(error.data);
         });

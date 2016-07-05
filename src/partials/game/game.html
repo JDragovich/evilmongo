@@ -1,12 +1,18 @@
 <div class="game">
     <div class="row">
         <div class="col-lg-6">
-            <h2>{{players.title}} Turn:{{players.turn}}</h2>
-            <h4>It's {{players.currentPlayerTurn}}'s turn</h4>
-            <h4>Current Balance {{players.balance | currency}}</h4>
-            <p><strong>Current Space:</strong> {{players.currentSpace}}</p>
-            <p><strong>Available Actions:</strong> stuff</p>
-            <p><strong>My Properties:</strong> None</p>
+            <h2>{{players.name}} Turn:{{players.turn}}</h2>
+            <h4>It's {{players.players[players.turn].user}}'s turn</h4>
+            <h4>Current Balance {{playerInfo.money | currency}}</h4>
+            <p><strong>Current Space:</strong> {{players.board[playerInfo.space].name}}</p>
+            <p><strong>Available Actions:</strong>
+                <button class="btn btn-default" ng-click="endTurn()" ng-if="playerInfo.user === players.players[players.turn].user">End Turn</button>
+                <button class="btn btn-default" ng-click="buyProperty(players.board[playerInfo.space])" ng-if="players.board[playerInfo.space].owner === 'Bank'">Buy Property</button>
+            </p>
+            <div>
+                <strong>My Properties:</strong>
+                <p ng-repeat="property in players.board" ng-if="property.owner === playerInfo.user">{{property.name}}</p>
+            </div>
             <div class="slide" ng-repeat="property in slides | orderBy:'-'">
                 <div class="color-bar" ng-if="property.color" style="background-color:{{property.color}}">
                     <div class="house" ng-if="!property.hotel && property.houses !== 0" ng-repeat="house in property.houseArray"></div>
@@ -15,7 +21,6 @@
                 <p class="icon" style="font-family:FontAwesome">{{icons[property.category]}}</p>
                 <p class="title">{{property.name}}</p>
             </div>
-            <button class="btn btn-default" ng-click="endTurn()">End Turn</button>
         </div>
         <div class="col-lg-6">
             <board size="400"></board>

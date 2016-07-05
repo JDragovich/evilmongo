@@ -30,6 +30,7 @@ module.exports = function(mongoose){
             category:{type:String,enum:['Chance','Property','Go','Jail','Go To Jail','Free Parking','Railroad','Community Chest','Utility','Tax']},
             name:String,
             color:String,
+            owner:{type:String,default:"Bank"},
             developable:Boolean,
             value:[{type:Number}],
             houses:Number,

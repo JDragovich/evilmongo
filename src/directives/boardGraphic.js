@@ -190,6 +190,14 @@
                                 ;
                         }
 
+                        group.selectAll(".player")
+                            .data(players.players.filter(function(player){return player.space == d.index}))
+                            .enter()
+                            .append("circle")
+                            .attr("r",5)
+                            .attr("cx", d.cellWidth/2)
+                            .attr("cy", function(d,i){return cellHeight*.4 + i * 6})
+
                         group.append("line") //append dividing lines
                             .classed("cell-divider",true)
                             .attr("x1",d.cellWidth)
